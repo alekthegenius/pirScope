@@ -7,3 +7,6 @@ preview_config = picam2.create_preview_configuration()
 picam2.configure(preview_config)
 
 picam2.start()
+
+while True:
+    pass
