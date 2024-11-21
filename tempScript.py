@@ -1,12 +1,35 @@
-from picamera2 import Picamera2, Preview
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QApplication, QWidget
+from picamera2.previews.qt import QGlPicamera2
+from picamera2 import Picamera2
+import datetime
 
 picam2 = Picamera2()
-picam2.start_preview(Preview.QT)
+picam2.configure(picam2.create_preview_configuration())
 
-preview_config = picam2.create_preview_configuration()
-picam2.configure(preview_config)
+def on_button_clicked():
+    button.setEnabled(False)
+    cfg = picam2.create_still_configuration()
+    picam2.switch_mode_and_capture_file(cfg, '/home/pi/Pictures/image{}.jpg'.format(datetime.datetime.now()), signal_function=qpicamera2.signal_done)
+
+def capture_done(job):
+    result = picam2.wait(job)
+    button.setEnabled(True)
+
+app = QApplication([])
+qpicamera2 = QGlPicamera2(picam2, width=800, height=600, keep_ar=False)
+button = QPushButton("Click to capture JPEG")
+window = QWidget()
+qpicamera2.done_signal.connect(capture_done)
+button.clicked.connect(on_button_clicked)
+
+layout_v = QVBoxLayout()
+layout_v.addWidget(qpicamera2)
+layout_v.addWidget(button)
+window.setWindowTitle("Qt Picamera2 App")
+window.resize(480, 480)
+window.setLayout(layout_v)
 
 picam2.start()
-
-while True:
-    pass
+window.show()
+app.exec()
