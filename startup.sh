@@ -1,1 +1,1 @@
-python3 /home/pi/pirScope/main.py
+python3 /home/pi/pirScope/tempScript.py
