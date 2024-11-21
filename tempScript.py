@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QApplication, QWidget
-from picamera2.previews.qt import QGlPicamera2
+from picamera2.previews.qt import QPicamera2
 from picamera2 import Picamera2
 import datetime
 
@@ -17,7 +17,7 @@ def capture_done(job):
     button.setEnabled(True)
 
 app = QApplication([])
-qpicamera2 = QGlPicamera2(picam2, width=800, height=600, keep_ar=False)
+qpicamera2 = QPicamera2(picam2, width=800, height=600, keep_ar=False)
 button = QPushButton("Click to capture JPEG")
 window = QWidget()
 qpicamera2.done_signal.connect(capture_done)
