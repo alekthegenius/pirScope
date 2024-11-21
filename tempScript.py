@@ -27,7 +27,7 @@ layout_v = QVBoxLayout()
 layout_v.addWidget(qpicamera2)
 layout_v.addWidget(button)
 window.setWindowTitle("Qt Picamera2 App")
-#window.resize(480, 400)
+window.resize(480, 400)
 window.setLayout(layout_v)
 
 picam2.start()
