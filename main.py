@@ -38,9 +38,13 @@ def control():
             picam2.stop_preview()
             picam2.stop_recording()
             picam2.close()
+            call("sudo restart", shell=True)
 
 
         elif command == "Shutdown":
+            picam2.stop_preview()
+            picam2.stop_recording()
+            picam2.close()
             call("sudo shutdown -h now", shell=True)
 
         return render_template("command.html")
