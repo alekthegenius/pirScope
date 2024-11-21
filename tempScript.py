@@ -17,7 +17,7 @@ def capture_done(job):
     button.setEnabled(True)
 
 app = QApplication([])
-qpicamera2 = QPicamera2(picam2, width=800, height=600, keep_ar=False)
+qpicamera2 = QPicamera2(picam2, width=480, height=360, keep_ar=False)
 button = QPushButton("Click to capture JPEG")
 window = QWidget()
 qpicamera2.done_signal.connect(capture_done)
