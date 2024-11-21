@@ -37,14 +37,14 @@ def control():
         elif command == "Restart":
             picam2.stop_preview()
             picam2.stop_recording()
-            picam2.close()
+            picam2.stop()
             call("sudo restart", shell=True)
 
 
         elif command == "Shutdown":
             picam2.stop_preview()
             picam2.stop_recording()
-            picam2.close()
+            picam2.stop()
             call("sudo shutdown -h now", shell=True)
 
         return render_template("command.html")
@@ -56,5 +56,4 @@ def control():
 if __name__ == "__main__":
     picam2.start()
 
-    while not stop:
-        app.run(host="0.0.0.0", port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)
