@@ -1,22 +1,64 @@
-#!/usr/bin/python3
-
-import time
+import threading
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QApplication, QWidget, QMainWindow
+from PyQt5.QtCore import Qt
+from picamera2.previews.qt import QPicamera2
+from picamera2 import Picamera2
 import datetime
+import sys
 from flask import Flask, render_template, request
-from picamera2 import Picamera2, Preview
 from subprocess import call
+from pathlib import Path
 
-stop = False
+output_dir = Path("/home/pi/Pictures")
+output_dir.mkdir(parents=True, exist_ok=True)
 
-app = Flask(__name__)
-
-imageDate = ""
 
 picam2 = Picamera2()
-picam2.start_preview(Preview.QT)
+imageDate = ""
+app = Flask(__name__)
 
-preview_config = picam2.create_preview_configuration()
-picam2.configure(preview_config)
+cfg = picam2.create_still_configuration()
+
+class MainWindow(QMainWindow):
+    def __init__(self, picam2):
+        super().__init__()
+        self.picam2 = picam2
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle("pir Scope")
+        self.setGeometry(0, 0, 480, 480)
+
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+
+        layout = QVBoxLayout(central_widget)
+
+        # Create QPicamera2 widget
+        self.qpicamera2 = QPicamera2(self.picam2, width=455, height=455, keep_ar=False)
+        layout.addWidget(self.qpicamera2)
+
+        # Create exit button
+        exit_button = QPushButton("Exit")
+        exit_button.setFixedHeight(25)
+        exit_button.clicked.connect(self.close)
+        layout.addWidget(exit_button)
+
+        self.showFullScreen()
+
+    def closeEvent(self, event):
+        self.picam2.stop()
+        event.accept()
+
+def preview():
+    picam2.configure(picam2.create_preview_configuration(main={"size": (480, 480)}))
+
+    app = QApplication(sys.argv)
+    
+    main_window = MainWindow(picam2)
+    
+    picam2.start()
 
 
 @app.route('/', methods=['GET'])
@@ -26,25 +68,23 @@ def control():
         imageDate = str(datetime.datetime.now())
         
         if command == "Photo":
-            picam2.capture('/home/pi/Pictures/image{}.jpg'.format(imageDate))
+            # Take photo
+            file_path = output_dir / f"img_{imageDate}.jpg"
+            picam2.switch_mode_and_capture_file(cfg, f"/home/pi/Pictures/img_{imageDate}.jpg")
 
         elif command == "StartRecording":
-            picam2.start_recording('/home/pi/Videos/video{}.h264'.format(imageDate))
+            # Start Recording 
+            pass
 
         elif command == "StopRecording":
-            picam2.stop_recording()
+            # Stop recording
+            pass
 
         elif command == "Restart":
-            picam2.stop_preview()
-            picam2.stop_recording()
-            picam2.stop()
             call("sudo restart", shell=True)
 
 
         elif command == "Shutdown":
-            picam2.stop_preview()
-            picam2.stop_recording()
-            picam2.stop()
             call("sudo shutdown -h now", shell=True)
 
         return render_template("command.html")
@@ -53,7 +93,18 @@ def control():
         return render_template("index.html")
 
 
-if __name__ == "__main__":
-    picam2.start()
+def frontend():
+    app.run(host="0.0.0.0", port=8080, debug=True, use_reloader=False)
 
-    app.run(host="0.0.0.0", port=8080, debug=True)
+
+
+# Create threads for each script
+serveThread = threading.Thread(target=preview, daemon=True)
+previewThread = threading.Thread(target=frontend, daemon=True)
+
+# Start both threads
+serveThread.start()
+previewThread.start()
+
+serveThread.join()
+previewThread.join()
