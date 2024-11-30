@@ -20,7 +20,7 @@ picam2 = Picamera2()
 imageDate = ""
 app = Flask(__name__)
 
-cfg = picam2.create_still_configuration()
+cfg = picam2.create_still_configuration({"buffer_count":"4"})
 
 class MainWindow(QMainWindow):
     def __init__(self, picam2):
@@ -109,8 +109,11 @@ serveThread = threading.Thread(target=preview, daemon=True)
 previewThread = threading.Thread(target=frontend, daemon=True)
 
 # Start both threads
-serveThread.start()
-previewThread.start()
+try:
+    serveThread.start()
+    previewThread.start()
 
-serveThread.join()
-previewThread.join()
+    serveThread.join()
+    previewThread.join()
+except Exception as e:
+    print(e)
