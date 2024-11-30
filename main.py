@@ -10,6 +10,8 @@ from flask import Flask, render_template, request
 from subprocess import call
 from pathlib import Path
 
+picam2_lock = threading.Lock()
+
 output_dir = Path("/home/pi/Pictures")
 output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -58,7 +60,8 @@ def preview():
     
     main_window = MainWindow(picam2)
     
-    picam2.start()
+    with picam2_lock:
+        picam2.start()
 
     sys.exit(app.exec_())
 
@@ -72,7 +75,8 @@ def control():
         if command == "Photo":
             # Take photo
             file_path = output_dir / f"img_{imageDate}.jpg"
-            picam2.switch_mode_and_capture_file(cfg, file_path)
+            with picam2_lock:
+                picam2.switch_mode_and_capture_file(cfg, file_path)
 
         elif command == "StartRecording":
             # Start Recording 
