@@ -70,7 +70,7 @@ def control():
         if command == "Photo":
             # Take photo
             file_path = output_dir / f"img_{imageDate}.jpg"
-            picam2.switch_mode_and_capture_file(cfg, f"/home/pi/Pictures/img_{imageDate}.jpg")
+            picam2.switch_mode_and_capture_file(cfg, file_path)
 
         elif command == "StartRecording":
             # Start Recording 
