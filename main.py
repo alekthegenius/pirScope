@@ -60,6 +60,8 @@ def preview():
     
     picam2.start()
 
+    sys.exit(app.exec_())
+
 
 @app.route('/', methods=['GET'])
 def control():
