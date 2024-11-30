@@ -20,7 +20,7 @@ picam2 = Picamera2()
 imageDate = ""
 app = Flask(__name__)
 
-cfg = picam2.create_still_configuration(buffer_count=4)
+cfg = picam2.create_still_configuration(buffer_count=4, raw={'size': (1536, 864)})
 
 class MainWindow(QMainWindow):
     def __init__(self, picam2):
