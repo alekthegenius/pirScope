@@ -67,7 +67,7 @@ def preview():
 
 
 @app.route('/', methods=['GET'])
-def control():
+def main():
     return render_template("index.html")
 
 @app.route('/control', methods=['POST'])

@@ -5,7 +5,7 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
-def control():
+def main():
     return render_template("index.html")
 
 @app.route('/control', methods=['POST'])
@@ -41,6 +41,6 @@ def control():
 
 if __name__ == "__main__":
     try:
-        app.run(host="0.0.0.0", port=8080, debug=True, use_reloader=False)
+        app.run(host="0.0.0.0", port=8080, debug=True)
     except Exception as e:
         print(e)

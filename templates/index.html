@@ -93,6 +93,7 @@
             restartIndicator = document.querySelector(".restart-indicator");
             shutdownIndicator = document.querySelector(".shutdown-indicator");
             recordingIndicator = document.querySelector(".recording-indicator");
+            settingIndicator = document.querySelector(".setting-indicator");
 
 
             errorText = document.querySelector(".error-text");
@@ -110,7 +111,7 @@
                             photoIndicator.style.display = "block";
                             setTimeout(function () {
                                 photoIndicator.style.display = "none";
-                            }, 1000);
+                            }, 10000);
 
                         },
                         error: function (error) {
@@ -181,6 +182,7 @@
                         type: 'POST',
                         success: function (response) {
                             console.log(response);
+                            shutdownIndicator.style.display = "block";
                         },
                         error: function (error) {
                             console.log(error);
@@ -203,6 +205,8 @@
                         type: 'POST',
                         success: function (response) {
                             console.log(response);
+                            restartIndicator.style.display = "block";
+
                         },
                         error: function (error) {
                             console.log(error);
@@ -228,6 +232,10 @@
                         type: 'POST',
                         success: function (response) {
                             console.log(response);
+                            settingIndicator.style.display = "block";
+                            setTimeout(function () {
+                                settingIndicator.style.display = "none";
+                            }, 10000);
                         },
                         error: function (error) {
                             console.log(error);
@@ -252,6 +260,10 @@
                         type: 'POST',
                         success: function (response) {
                             console.log(response);
+                            settingIndicator.style.display = "block";
+                            setTimeout(function () {
+                                settingIndicator.style.display = "none";
+                            }, 10000);
                         },
                         error: function (error) {
                             console.log(error);
