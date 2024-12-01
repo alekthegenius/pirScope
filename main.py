@@ -68,11 +68,15 @@ def preview():
 
 @app.route('/', methods=['GET'])
 def control():
+    return render_template("index.html")
+
+@app.route('/control', methods=['POST'])
+def control():
     command = request.args.get('command')
     if command is not None:
         imageDate = str(datetime.datetime.now())
         
-        if command == "Photo":
+        if command == "TakePhoto":
             # Take photo
             file_path = output_dir / f"img_{imageDate}.jpg"
             with picam2_lock:
@@ -93,10 +97,10 @@ def control():
         elif command == "Shutdown":
             call("sudo shutdown -h now", shell=True)
 
-        return render_template("command.html")
+        return "Success"
 
     else:
-        return render_template("index.html")
+        return "Error"
 
 
 def frontend():

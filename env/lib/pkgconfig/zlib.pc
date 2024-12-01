@@ -1,0 +1,13 @@
+prefix=/Users/alekvasek/Documents/GitHub/pirScope/env
+exec_prefix=/Users/alekvasek/Documents/GitHub/pirScope/env
+libdir=/Users/alekvasek/Documents/GitHub/pirScope/env/lib
+sharedlibdir=/Users/alekvasek/Documents/GitHub/pirScope/env/lib
+includedir=/Users/alekvasek/Documents/GitHub/pirScope/env/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

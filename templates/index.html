@@ -3,21 +3,297 @@
     <head>
         <title>pIR Scope</title>
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+        <link rel="stylesheet" href="/static/css/style.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     </head>
     <body>
-        <h1>Control pIR Scope</h1>
+        <div class="error-indicator">
+            <span class="error-text">An Error Occured</span>
+        </div>
+
+        <div class="shutdown-indicator">
+            <span class="shutdown-text">Shutting Down Pi</span>
+        </div>
 
 
-        <a href="/?command=Photo"><button class="button">Take Photo</button></a>
+        <div class="restart-indicator">
+            <span class="restart-text">Restarting Pi</span>
+        </div>
 
-        <!-- <a href="/?command=StartRecording"><button class="button">Start Recording</button></a> -->
+        <div class="recording-indicator">
+            <span class="recording-text">Recording Video</span>
+        </div>
 
-        <!-- <a href="/?command=StopRecording"><button class="button">Stop Recording</button></a> -->
+        <div class="photo-indicator">
+            <span class="photo-text">Taking Photo</span>
+        </div>
 
-        <a href="/?command=Restart"><button class="button">Restart</button></a>
+        <div class="setting-indicator">
+            <span class="setting-text">Setting Saved</span>
+        </div>
+        
+        <h1 class="page-header">pIR Scope</h1>
 
-        <a href="/?command=Shutdown"><button class="button">Shutdown</button></a>
+
+        <div class="center">
+            <div class="controls">
+                <h2>Camera Controls</h2>
+
+
+                <button class="button modal-button" id="TakePhoto">Take Photo</button>
+                <button class="button modal-button" id="StartRecording">Start Recording</button>
+                <button class="button modal-button" id="StopRecording">Stop Recording</button>
+
+
+
+            </div>
+            <div class="controls">
+                <h2>Camera Settings</h2>
+
+                
+                <div class="dropdown">
+                    <button onclick="dropPreview()" class="dropbtn" id="previewRes">Preview Resolution</button>
+                    <div id="preview-resolution" class="dropdown-content">
+                        <button class="prevResButton">480x270</button>
+                        <button class="prevResButton">560x315</button>
+                        <button class="prevResButton">832x468</button>
+                    </div>
+                </div>
+
+
+                <div class="dropdown">
+                    <button onclick="dropMode()" class="dropbtn" id="cameMode">Camera Mode</button>
+                    <div id="camera-mode" class="dropdown-content">
+                        <button class="camModeButton">4608x2592</button>
+                        <button class="camModeButton">2304x1296</button>
+                        <button class="camModeButton">1536x864</button>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="controls">
+                <h2>Pi Controls</h2>
+
+                <button class="control-button" id="Restart">Restart</button>
+
+                <button class="control-button" id="Shutdown">Shutdown</button>
+        
+            </div>
+        </div>
+
+        <script>
+
+            photoButton = document.getElementById("TakePhoto");
+            recordButton = document.getElementById("StartRecording");
+            stopButton = document.getElementById("StopRecording");
+
+            photoIndicator = document.querySelector(".photo-indicator");
+            errorIndicator = document.querySelector(".error-indicator");
+            restartIndicator = document.querySelector(".restart-indicator");
+            shutdownIndicator = document.querySelector(".shutdown-indicator");
+            recordingIndicator = document.querySelector(".recording-indicator");
+
+
+            errorText = document.querySelector(".error-text");
+
+
+            $(function () {
+                $('button#TakePhoto').click(function () {
+                    $.ajax({
+                        url: `/control?command=TakePhoto`,
+
+                        type: 'POST',
+                        success: function (response) {
+                            console.log(response);
+
+                            photoIndicator.style.display = "block";
+                            setTimeout(function () {
+                                photoIndicator.style.display = "none";
+                            }, 1000);
+
+                        },
+                        error: function (error) {
+                            console.log(error);
+
+                            errorIndicator.style.display = "block";
+                            errorText.innerHTML = error.responseText;
+                            setTimeout(function () {
+                                errorIndicator.style.display = "none";
+                            }, 10000);
+                        }
+                    });
+                });
+            });
+
+
+            $(function () {
+                $('button#StartRecording').click(function () {
+                    $.ajax({
+                        url: `/control?command=StartRecording`,
+
+                        type: 'POST',
+                        success: function (response) {
+                            console.log(response);
+                            recordingIndicator.style.display = "block";
+                        },
+                        error: function (error) {
+                            console.log(error);
+
+                            errorIndicator.style.display = "block";
+                            errorText.innerHTML = error.responseText;
+                            setTimeout(function () {
+                                errorIndicator.style.display = "none";
+                            }, 10000);
+                        }
+                    });
+                });
+            });
+
+            $(function () {
+                $('button#StopRecording').click(function () {
+                    $.ajax({
+                        url: `/control?command=StopRecording`,
+
+                        type: 'POST',
+                        success: function (response) {
+                            console.log(response);
+                            recordingIndicator.style.display = "none";
+                        },
+                        error: function (error) {
+                            console.log(error);
+
+                            errorIndicator.style.display = "block";
+                            errorText.innerHTML = error.responseText;
+                            setTimeout(function () {
+                                errorIndicator.style.display = "none";
+                            }, 10000);
+                        }
+                    });
+                });
+            });
+
+            $(function () {
+                $('button#Shutdown').click(function () {
+                    $.ajax({
+                        url: `/control?command=Shutdown`,
+
+                        type: 'POST',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+
+                            errorIndicator.style.display = "block";
+                            errorText.innerHTML = error.responseText;
+                            setTimeout(function () {
+                                errorIndicator.style.display = "none";
+                            }, 10000);
+                        }
+                    });
+                });
+            });
+
+            $(function () {
+                $('button#Restart').click(function () {
+                    $.ajax({
+                        url: `/control?command=Restart`,
+
+                        type: 'POST',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+
+                            errorIndicator.style.display = "block";
+                            errorText.innerHTML = error.responseText;
+                            setTimeout(function () {
+                                errorIndicator.style.display = "none";
+                            }, 10000);
+                        }
+                    });
+                });
+            });
+
+
+            $(function () {
+                $('button.prevResButton').click(function () {
+
+                    const resValue = $(this).attr('title');
+                    $.ajax({
+                        url: `/control?prevRes=${resValue}`,
+
+                        type: 'POST',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+
+                            errorIndicator.style.display = "block";
+                            errorText.innerHTML = error.responseText;
+                            setTimeout(function () {
+                                errorIndicator.style.display = "none";
+                            }, 10000);
+                        }
+                    });
+                });
+            });
+
+            $(function () {
+                $('button.modeValue').click(function () {
+
+                    const modeValue = $(this).attr('title');
+                    $.ajax({
+                        url: `/control?cameraMode=${modeValue}`,
+
+                        type: 'POST',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+
+                            errorIndicator.style.display = "block";
+                            errorText.innerHTML = error.responseText;
+                            setTimeout(function () {
+                                errorIndicator.style.display = "none";
+                            }, 10000);
+                        }
+                    });
+                });
+            });
+
+            /* When the user clicks on the button, 
+            toggle between hiding and showing the dropdown content */
+            function dropPreview() {
+                document.getElementById("preview-resolution").classList.toggle("show");
+            }
+
+            function dropMode() {
+                document.getElementById("camera-mode").classList.toggle("show");
+            }
+
+            // Close the dropdown if the user clicks outside of it
+            window.onclick = function(event) {
+                if (!event.target.matches('.dropbtn')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    var i;
+                    for (i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                    }
+                    }
+                }
+            }
+
+
+
+
+        </script>
 
     </body>
 </html>
