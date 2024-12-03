@@ -9,6 +9,7 @@ import sys
 from flask import Flask, render_template, request
 from subprocess import call
 from pathlib import Path
+import os
 
 picam2_lock = threading.Lock()
 

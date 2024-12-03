@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>pIR Photo Browser</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="/static/css/photos-style.css">
+        <link href="{{ url_for('static', filename='lightbox2-2.11.5/css/lightbox.css')}}" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://kit.fontawesome.com/03e18f9ab4.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="center">
+            <h1>Photo Browser</h1>
+            
+            <a href="/"><button class="button">Go Home</button></a>
+
+            <div class="photo-gallery">
+                {% for photo in files %}
+                    <div class="photo-container">
+                        <a href="{{ url_for('static', filename='photos/' + photo) }}" data-lightbox="{{ photo }}" data-title="{{ photo }}"><img src="{{ url_for('static', filename='photos/' + photo) }}"></a>
+                    </div>
+                {% endfor %} 
+            </div>
+
+        </div>
+
+
+
+        <script src="{{ url_for('static', filename='lightbox2-2.11.5/js/lightbox.js')}}"></script>
+    </body>
+</html>

@@ -1,12 +1,26 @@
 import datetime
 from flask import Flask, render_template, request
+import os
+import glob
 
 
 app = Flask(__name__)
 
+photos_dir = os.path.join("static", "photos") + "/"
+
+
 @app.route('/', methods=['GET'])
 def main():
     return render_template("index.html")
+
+
+@app.route('/photos', methods=['GET'])
+def photo():
+    files = glob.glob(photos_dir + "*.jpg")
+    filenames = [os.path.basename(x) for x in files]
+    print(filenames)
+
+    return render_template("photos.html", files=filenames)
 
 @app.route('/control', methods=['POST'])
 def control():
