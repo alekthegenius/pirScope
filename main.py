@@ -10,11 +10,12 @@ from flask import Flask, render_template, request
 from subprocess import call
 from pathlib import Path
 import os
+import glob
 
 picam2_lock = threading.Lock()
 
-output_dir = Path("/home/pi/Pictures")
-output_dir.mkdir(parents=True, exist_ok=True)
+photos_dir = os.path.join("static", "photos") + "/"
+
 
 
 picam2 = Picamera2()
@@ -71,6 +72,14 @@ def preview():
 def main():
     return render_template("index.html")
 
+@app.route('/photos', methods=['GET'])
+def photo():
+    files = glob.glob(photos_dir + "*.jpg")
+    filenames = [os.path.basename(x) for x in files]
+    print(filenames)
+
+    return render_template("photos.html", files=filenames)
+
 @app.route('/control', methods=['POST'])
 def control():
     command = request.args.get('command')
@@ -79,7 +88,7 @@ def control():
         
         if command == "TakePhoto":
             # Take photo
-            file_path = output_dir / f"img_{imageDate}.jpg"
+            file_path = photos_dir + f"img_{imageDate}.jpg"
             with picam2_lock:
                 picam2.switch_mode_and_capture_file(cfg, file_path)
 
