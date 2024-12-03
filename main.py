@@ -16,6 +16,8 @@ picam2_lock = threading.Lock()
 
 photos_dir = "./static/photos/"
 
+if not os.path.exists(photos_dir):
+    os.makedirs(photos_dir)
 
 
 picam2 = Picamera2()
