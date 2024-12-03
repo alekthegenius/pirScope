@@ -14,7 +14,7 @@ import glob
 
 picam2_lock = threading.Lock()
 
-photos_dir = "static/photos/"
+photos_dir = "./static/photos"
 
 
 
@@ -89,6 +89,7 @@ def control():
         if command == "TakePhoto":
             # Take photo
             file_path = photos_dir + f"img_{imageDate}.jpg"
+            print(f"File path: {file_path}")
             with picam2_lock:
                 picam2.switch_mode_and_capture_file(cfg, file_path)
 
