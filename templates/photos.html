@@ -14,6 +14,12 @@
             
             <a href="/"><button class="button">Go Home</button></a>
 
+            {% if(files == []) %}
+
+            <h2>No Photos Yet...</h2>
+
+            {% else %}
+
             <div class="photo-gallery">
                 {% for photo in files %}
                     <div class="photo-container">
@@ -21,6 +27,8 @@
                     </div>
                 {% endfor %} 
             </div>
+
+            {% endif %}
 
         </div>
 

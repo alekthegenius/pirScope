@@ -14,7 +14,7 @@ import glob
 
 picam2_lock = threading.Lock()
 
-photos_dir = os.path.join("static", "photos") + "/"
+photos_dir = "static/photos/"
 
 
 
