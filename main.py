@@ -112,6 +112,7 @@ def control():
             date = str(datetime.datetime.now())
             output = FfmpegOutput((photos_dir + f"vid{date}.mp4"), audio=False)
             with picam2_lock:
+                picam2.stop()
                 picam2.configure(video_config)
                 picam2.start_recording(encoder, output)
             
