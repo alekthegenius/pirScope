@@ -26,7 +26,7 @@
         </div>
 
         <div class="photo-indicator">
-            <span class="photo-text">Taking Photo</span>
+            <span class="photo-text">Took Photo</span>
         </div>
 
         <div class="setting-indicator">
@@ -73,6 +73,15 @@
                         <button class="camModeButton">4608x2592</button>
                         <button class="camModeButton">2304x1296</button>
                         <button class="camModeButton">1536x864</button>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button onclick="dropAf()" class="dropbtn" id="afMode">Autofocus Mode</button>
+                    <div id="af-mode" class="dropdown-content">
+                        <button class="afModeButton">Manual</button>
+                        <button class="afModeButton">Auto</button>
+                        <button class="afModeButton">Continuous</button>
                     </div>
                 </div>
 
@@ -257,7 +266,7 @@
             });
 
             $(function () {
-                $('button.modeValue').click(function () {
+                $('button.camModeButton').click(function () {
 
                     const modeValue = $(this).attr('title');
                     $.ajax({
@@ -284,6 +293,63 @@
                 });
             });
 
+            $(function () {
+                $('button.afModeButton').click(function () {
+
+                    const afMode = $(this).attr('title');
+                    $.ajax({
+                        url: `/control?afMode=${afMode}`,
+
+                        type: 'POST',
+                        success: function (response) {
+                            console.log(response);
+                            settingIndicator.style.display = "block";
+                            setTimeout(function () {
+                                settingIndicator.style.display = "none";
+                            }, 10000);
+                        },
+                        error: function (error) {
+                            console.log(error);
+
+                            errorIndicator.style.display = "block";
+                            errorText.innerHTML = error.responseText;
+                            setTimeout(function () {
+                                errorIndicator.style.display = "none";
+                            }, 10000);
+                        }
+                    });
+                });
+            });
+
+            $(function () {
+                $('button.prevResButton').click(function () {
+
+                    const prevRes = $(this).attr('title');
+                    $.ajax({
+                        url: `/control?prevRes=${prevRes}`,
+
+                        type: 'POST',
+                        success: function (response) {
+                            console.log(response);
+                            settingIndicator.style.display = "block";
+                            setTimeout(function () {
+                                settingIndicator.style.display = "none";
+                            }, 10000);
+                        },
+                        error: function (error) {
+                            console.log(error);
+
+                            errorIndicator.style.display = "block";
+                            errorText.innerHTML = error.responseText;
+                            setTimeout(function () {
+                                errorIndicator.style.display = "none";
+                            }, 10000);
+                        }
+                    });
+                });
+            });
+
+
             /* When the user clicks on the button, 
             toggle between hiding and showing the dropdown content */
             function dropPreview() {
@@ -292,6 +358,10 @@
 
             function dropMode() {
                 document.getElementById("camera-mode").classList.toggle("show");
+            }
+
+            function dropAf() {
+                document.getElementById("af-mode").classList.toggle("show");
             }
 
             // Close the dropdown if the user clicks outside of it

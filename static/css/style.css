@@ -117,7 +117,7 @@ span > h1 {
     color: rgb(255, 255, 255);
     animation-name: fade-animation;
     animation-duration: 2s;
-    animation-iteration-count: 2;
+    animation-iteration-count: 1;
     display: none;
 }
 

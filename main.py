@@ -3,7 +3,9 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QApplication, QWidget, QMainWindow
 from PyQt5.QtCore import Qt
 from picamera2.previews.qt import QPicamera2
+from picamera2.encoders import H264Encoder
 from picamera2 import Picamera2
+from picamera2.outputs import FfmpegOutput
 import datetime
 import sys
 from flask import Flask, render_template, request
@@ -24,12 +26,15 @@ picam2 = Picamera2()
 imageDate = ""
 app = Flask(__name__)
 
+video_config = picam2.create_video_configuration()
 cfg = picam2.create_still_configuration(buffer_count=4, raw={'size': (1536, 864)})
+preview_config = picam2.create_preview_configuration(main={"size": (480, 480)})
+
+encoder = H264Encoder(bitrate=10000000)
 
 class MainWindow(QMainWindow):
-    def __init__(self, picam2):
+    def __init__(self):
         super().__init__()
-        self.picam2 = picam2
         self.initUI()
 
     def initUI(self):
@@ -54,20 +59,24 @@ class MainWindow(QMainWindow):
         self.showFullScreen()
 
     def closeEvent(self, event):
-        self.picam2.stop()
+        with picam2_lock:
+            picam2.stop()
         event.accept()
 
 def preview():
-    picam2.configure(picam2.create_preview_configuration(main={"size": (480, 480)}))
+    with picam2_lock:
+        picam2.configure(preview_config)
 
-    app = QApplication(sys.argv)
+    app = QApplication([])
+
     
     main_window = MainWindow(picam2)
     
     with picam2_lock:
         picam2.start()
 
-    sys.exit(app.exec_())
+    main_window.show()
+    app.exec()
 
 
 @app.route('/', methods=['GET'])
@@ -86,28 +95,49 @@ def photo():
 def control():
     command = request.args.get('command')
     if command is not None:
-        imageDate = str(datetime.datetime.now())
+        date = str(datetime.datetime.now())
         
         if command == "TakePhoto":
             # Take photo
-            file_path = photos_dir + f"img_{imageDate}.jpg"
+            file_path = photos_dir + f"img_{date}.jpg"
             print(f"File path: {file_path}")
             with picam2_lock:
                 picam2.switch_mode_and_capture_file(cfg, file_path)
+            
+            return "Success"
 
         elif command == "StartRecording":
-            # Start Recording 
-            pass
+            # Start Recording
+            date = str(datetime.datetime.now())
+            output = FfmpegOutput((photos_dir + f"vid{date}.mp4"), audio=False)
+            with picam2_lock:
+                picam2.configure(video_config)
+                picam2.start_recording(encoder, output)
+            
+            return "Success"
 
         elif command == "StopRecording":
             # Stop recording
-            pass
+            with picam2_lock:
+                picam2.stop_recording()
+                picam2.configure()
+            
+            return "Success"
 
         elif command == "Restart":
-            call("sudo restart", shell=True)
+            with picam2_lock:
+                if picam2.recording:
+                    picam2.stop_recording()
+            
+
+            call("sudo reboot", shell=True)
 
 
         elif command == "Shutdown":
+            with picam2_lock:
+                if picam2.recording:
+                    picam2.stop_recording()
+
             call("sudo shutdown -h now", shell=True)
 
         return "Success"
