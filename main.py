@@ -47,7 +47,8 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(central_widget)
 
         # Create QPicamera2 widget
-        self.qpicamera2 = QPicamera2(self.picam2, width=455, height=455, keep_ar=False)
+        
+        self.qpicamera2 = QPicamera2(picam2, width=455, height=455, keep_ar=False)
         layout.addWidget(self.qpicamera2)
 
         # Create exit button
