@@ -70,13 +70,13 @@ def preview():
     app = QApplication([])
 
     
-    main_window = MainWindow(picam2)
+    main_window = MainWindow()
     
     with picam2_lock:
         picam2.start()
 
     main_window.show()
-    app.exec()
+    sys.exit(app.exec_())
 
 
 @app.route('/', methods=['GET'])
