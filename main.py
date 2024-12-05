@@ -96,7 +96,7 @@ def photo():
 def control():
     command = request.args.get('command')
     if command is not None:
-        date = str(datetime.datetime.now())
+        date = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
         
         if command == "TakePhoto":
             # Take photo
@@ -109,10 +109,10 @@ def control():
 
         elif command == "StartRecording":
             # Start Recording
-            date = str(datetime.datetime.now())
+            date = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
             output = FfmpegOutput((photos_dir + f"vid{date}.mp4"), audio=False)
             with picam2_lock:
-                picam2.stop()
+                picam2.stop_preview()
                 picam2.configure(video_config)
                 picam2.start_recording(encoder, output)
             
@@ -122,7 +122,8 @@ def control():
             # Stop recording
             with picam2_lock:
                 picam2.stop_recording()
-                picam2.configure()
+                picam2.configure(preview_config)
+                picam2.start_preview()
             
             return "Success"
 
@@ -145,7 +146,7 @@ def control():
         return "Success"
 
     else:
-        return "Error"
+        return "Invalid command", 400
 
 
 def frontend():
