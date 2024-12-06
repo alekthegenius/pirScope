@@ -188,7 +188,7 @@
 
                     const resValue = $(this).attr('title');
                     $.ajax({
-                        url: `/control?prevRes=${resValue}`,
+                        url: `/control?command=prevRes&prevRes=${resValue}`,
 
                         type: 'POST',
                         success: function (response) {
@@ -216,7 +216,7 @@
 
                     const modeValue = $(this).attr('title');
                     $.ajax({
-                        url: `/control?cameraMode=${modeValue}`,
+                        url: `/control?command=camMode&cameraMode=${modeValue}`,
 
                         type: 'POST',
                         success: function (response) {
@@ -244,7 +244,7 @@
 
                     const afMode = $(this).attr('title');
                     $.ajax({
-                        url: `/control?afMode=${afMode}`,
+                        url: `/control?command=afMode&afMode=${afMode}`,
 
                         type: 'POST',
                         success: function (response) {

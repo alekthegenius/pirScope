@@ -95,6 +95,10 @@ def photo():
 @app.route('/control', methods=['POST'])
 def control():
     command = request.args.get('command')
+    prevRes = request.args.get('prevRes')
+    afMode = request.args.get('afMode')
+    camMode = request.args.get('cameraMode')
+
     if command is not None:
         date = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
         
@@ -103,29 +107,45 @@ def control():
             file_path = photos_dir + f"img_{date}.jpg"
             print(f"File path: {file_path}")
             with picam2_lock:
+            
                 picam2.switch_mode_and_capture_file(cfg, file_path)
             
             return "Success"
-
-        elif command == "StartRecording":
-            # Start Recording
-            date = str(datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
-            output = FfmpegOutput((photos_dir + f"vid{date}.mp4"), audio=False)
+        
+        elif command == "prevRes":
             with picam2_lock:
-                picam2.stop_preview()
-                picam2.configure(video_config)
-                picam2.start_recording(encoder, output)
-            
+
+                picam2.stop()
+
+                #Update Preview Resolution
+                width, height = map(int, prevRes.split('x'))
+                new_preview_config = picam2.create_preview_configuration(main={"size": (width, height)})
+
+                picam2.configure(new_preview_config)
+                picam2.start()
+
             return "Success"
 
-        elif command == "StopRecording":
-            # Stop recording
+        elif command == "afMode":
             with picam2_lock:
-                picam2.stop_recording()
-                picam2.configure(preview_config)
-                picam2.start_preview()
-            
+                #Update AF Mode
+                picam2.set_controls({"AfMode": afMode})
             return "Success"
+
+        elif command == "camMode":
+            with picam2_lock:
+
+                picam2.stop()
+
+                #Update Preview Resolution
+                width, height = map(int, prevRes.split('x'))
+                new_cfg_config = picam2.create_still_configuration(main={"size": (width, height)})
+
+                picam2.configure(new_cfg_config)
+                picam2.start()
+
+            return "Success"
+
 
         elif command == "Restart":
             with picam2_lock:
@@ -142,6 +162,7 @@ def control():
                     picam2.stop_recording()
 
             call("sudo shutdown -h now", shell=True)
+
 
         return "Success"
 
