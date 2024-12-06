@@ -38,21 +38,6 @@ body, html {
   }
   
 
-.recording-indicator {
-    text-align: center;
-    font-size: 20px;
-    font-weight: bold;
-    background-color: #e33636;
-    width: 100%;
-    padding: 10px;
-    position: sticky;
-    top: 0;
-    animation-name: fade-animation;
-    animation-duration: 2s;
-    animation-iteration-count: infinite;
-    display: none;
-}
-
 .error-indicator {
     text-align: center;
     font-size: 20px;

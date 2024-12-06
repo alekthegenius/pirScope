@@ -21,9 +21,6 @@
             <span class="restart-text">Restarting Pi</span>
         </div>
 
-        <div class="recording-indicator">
-            <span class="recording-text">Recording Video</span>
-        </div>
 
         <div class="photo-indicator">
             <span class="photo-text">Took Photo</span>
@@ -45,11 +42,6 @@
 
 
                 <button class="button" id="TakePhoto">Take Photo</button>
-                <button class="button" id="StartRecording">Start Recording</button>
-                <button class="button" id="StopRecording">Stop Recording</button>
-
-
-
 
 
             </div>
@@ -142,52 +134,6 @@
                 });
             });
 
-
-            $(function () {
-                $('button#StartRecording').click(function () {
-                    $.ajax({
-                        url: `/control?command=StartRecording`,
-
-                        type: 'POST',
-                        success: function (response) {
-                            console.log(response);
-                            recordingIndicator.style.display = "block";
-                        },
-                        error: function (error) {
-                            console.log(error);
-
-                            errorIndicator.style.display = "block";
-                            errorText.innerHTML = error.responseText;
-                            setTimeout(function () {
-                                errorIndicator.style.display = "none";
-                            }, 10000);
-                        }
-                    });
-                });
-            });
-
-            $(function () {
-                $('button#StopRecording').click(function () {
-                    $.ajax({
-                        url: `/control?command=StopRecording`,
-
-                        type: 'POST',
-                        success: function (response) {
-                            console.log(response);
-                            recordingIndicator.style.display = "none";
-                        },
-                        error: function (error) {
-                            console.log(error);
-
-                            errorIndicator.style.display = "block";
-                            errorText.innerHTML = error.responseText;
-                            setTimeout(function () {
-                                errorIndicator.style.display = "none";
-                            }, 10000);
-                        }
-                    });
-                });
-            });
 
             $(function () {
                 $('button#Shutdown').click(function () {
